@@ -1,16 +1,23 @@
 const socket = io()
 
+//elements
+const $mesageForm = document.querySelector('#message-form')
+const $mesageFormInput = $mesageForm.querySelector('input')
+const $mesageFormButton = $mesageForm.querySelector('button')
 
 socket.on('message', (message) => {
     console.log(message)
 })
 
-document.querySelector('#message-form').addEventListener('submit', (e) =>{
+$mesageForm.addEventListener('submit', (e) =>{
     e.preventDefault()
 
+    $mesageFormButton.setAttribute('disabled','disables')
+
     const message = e.target.elements.message.value
-    socket.emit('sendMessage',message, (ackn) => {
-        console.log('Message delivered',ackn)
+    socket.emit('sendMessage',message, (message) => {
+        $mesageFormButton.removeAttribute('disables')
+        console.log('Message delivered!',message)
     })
 })
 
@@ -23,6 +30,8 @@ document.querySelector('#send-location').addEventListener('click', (e) => {
         socket.emit('sendLocation',{
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
+        },() => {
+            console.log('location shared')
         });
         
     })
